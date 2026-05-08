@@ -658,7 +658,7 @@ def main():
         
         st.divider()
         
-        mode = st.radio("🎯", 
+        mode = st.radio("Select Analysis Mode", 
                         ["📷 Camera", 
                          "📁 File Upload",
                          "📊 Dashboard"])
