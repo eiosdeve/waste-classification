@@ -20,9 +20,10 @@ st.set_page_config(
 if 'dark_mode' not in st.session_state:
     st.session_state['dark_mode'] = True
 
-# --- Theme-based CSS (FIXED COLORS) ---
+# --- Theme-based CSS (Enhanced Light Theme for Readability) ---
 def get_theme_css():
     if st.session_state['dark_mode']:
+        # DARK THEME (unchanged, already readable)
         return """
         <style>
         /* ===== MAIN BACKGROUND & BASE FONT ===== */
@@ -215,30 +216,31 @@ def get_theme_css():
         </style>
         """
     else:
+        # ==================== LIGHT THEME (HIGH CONTRAST) ====================
         return """
         <style>
-        /* ===== MAIN BACKGROUND & BASE FONT ===== */
+        /* MAIN BACKGROUND & TEXT – DARK ON LIGHT */
         .stApp, .main {
-            background-color: #f8f9fa;
-            color: #1a1a2e;
+            background-color: #ffffff;
+            color: #1e293b;
         }
         .stApp p, .stApp span, .stApp label, .stApp li, .stApp div {
-            color: #1a1a2e;
+            color: #1e293b !important;
         }
 
-        /* ===== WIDGET LABELS (force dark text) ===== */
+        /* FORCE ALL WIDGET LABELS TO BE DARK */
         div[data-testid="stWidgetLabel"] p,
         div[data-testid="stWidgetLabel"] h1,
         div[data-testid="stWidgetLabel"] h2,
         div[data-testid="stWidgetLabel"] h3,
         legend {
-            color: #1a1a2e !important;
+            color: #0f172a !important;
             font-weight: 600;
         }
 
-        /* ===== METRIC CARDS ===== */
+        /* METRIC CARDS – WHITE BACKGROUND, DARK TEXT */
         div[data-testid="stMetric"] {
-            background-color: #ffffff;
+            background-color: #f8fafc;
             padding: 20px;
             border-radius: 10px;
             border-left: 5px solid #00b894;
@@ -246,38 +248,40 @@ def get_theme_css():
             border: 1px solid #e2e8f0;
         }
         div[data-testid="stMetricValue"] > div {
-            color: #008c6a !important;
-            font-weight: 700;
+            color: #0f172a !important;   /* Very dark gray for readability */
+            font-weight: 800;
+            font-size: 2rem;
         }
         div[data-testid="stMetricLabel"] > div > p {
-            color: #4a5568 !important;
-            font-weight: 500;
+            color: #334155 !important;
+            font-weight: 600;
         }
 
-        /* ===== SIDEBAR ===== */
+        /* SIDEBAR – LIGHT WITH DARK TEXT */
         div[data-testid="stSidebar"] {
-            background-color: #ffffff !important;
-            border-right: 1px solid #e2e8f0;
+            background-color: #f1f5f9 !important;
+            border-right: 1px solid #cbd5e1;
         }
         div[data-testid="stSidebar"] .stMarkdown p,
         div[data-testid="stSidebar"] .stMarkdown h3,
         div[data-testid="stSidebar"] label {
-            color: #1a1a2e !important;
+            color: #0f172a !important;
         }
 
-        /* ===== RADIO / SELECT WIDGETS ===== */
+        /* RADIO BUTTONS – CLEAR DARK TEXT */
         div[data-testid="stRadio"] > div {
-            background-color: #eef2f7;
+            background-color: #ffffff;
             padding: 10px;
             border-radius: 10px;
-            border: 1px solid #d0d7de;
-            color: #1a1a2e;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
         }
         div[data-testid="stRadio"] label {
-            color: #1a1a2e !important;
+            color: #0f172a !important;
+            font-weight: 500;
         }
 
-        /* ===== BUTTONS (LIGHT) ===== */
+        /* BUTTONS – HIGH CONTRAST */
         .stButton > button {
             background-color: #00b894 !important;
             color: #ffffff !important;
@@ -289,52 +293,47 @@ def get_theme_css():
         .stButton > button:hover {
             background-color: #008c6a !important;
             border-color: #008c6a !important;
-            color: #ffffff !important;
-        }
-        .stButton > button:active {
-            background-color: #006b52 !important;
-            border-color: #006b52 !important;
         }
         .stButton > button p {
             color: #ffffff !important;
         }
 
-        /* ===== PROGRESS BAR ===== */
+        /* PROGRESS BAR */
         .stProgress > div > div > div > div {
             background-color: #00b894 !important;
         }
 
-        /* ===== ALERTS ===== */
+        /* ALERTS – LIGHT BLUE WITH DARK TEXT */
         div[data-testid="stAlert"] {
-            background-color: #eef7ff !important;
-            border: 1px solid #b8daff !important;
+            background-color: #eef2ff !important;
+            border: 1px solid #c7d2fe !important;
             border-radius: 8px;
         }
         div[data-testid="stAlert"] p {
-            color: #004085 !important;
+            color: #1e293b !important;
         }
 
-        /* ===== HEADINGS ===== */
+        /* HEADINGS – DARK TEAL */
         h1, h2, h3, h4, h5, h6 {
-            color: #008c6a !important;
+            color: #0f766e !important;
         }
 
-        /* ===== INFO CARD ===== */
+        /* INFO CARD – WHITE BACKGROUND, DARK TEXT */
         .info-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: #ffffff;
             padding: 20px;
             border-radius: 15px;
             border-left: 4px solid #00b894;
             margin-bottom: 20px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            color: #1a1a2e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: #1e293b;
         }
         .info-card p, .info-card h4, .info-card strong {
-            color: #1a1a2e !important;
+            color: #1e293b !important;
         }
 
-        /* ===== STAT CARD ===== */
+        /* STAT CARD */
         .stat-card {
             background: #ffffff;
             padding: 15px;
@@ -342,53 +341,58 @@ def get_theme_css():
             text-align: center;
             border: 1px solid #e2e8f0;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            color: #1a1a2e;
+            color: #0f172a;
         }
         .stat-card p, .stat-card h3 {
-            color: #1a1a2e !important;
+            color: #0f172a !important;
+        }
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
 
-        /* ===== CAPTIONS & SMALL TEXT ===== */
+        /* CAPTIONS & SMALL TEXT */
         .stCaption, div[data-testid="stCaptionContainer"] p {
-            color: #64748b !important;
+            color: #475569 !important;
         }
 
-        /* ===== EXPANDER ===== */
+        /* EXPANDER */
         [data-testid="stExpander"] {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
         }
         [data-testid="stExpander"] summary p {
-            color: #1a1a2e !important;
+            color: #0f172a !important;
+            font-weight: 600;
         }
 
-        /* ===== TABS ===== */
+        /* TABS */
         [data-baseweb="tab-list"] button p {
-            color: #64748b !important;
+            color: #334155 !important;
         }
         [data-baseweb="tab-list"] button[aria-selected="true"] p {
-            color: #008c6a !important;
+            color: #0f766e !important;
             font-weight: 700;
         }
 
-        /* ===== FILE UPLOADER / CAMERA ===== */
+        /* FILE UPLOADER / CAMERA */
         [data-testid="stFileUploader"] p,
         [data-testid="stFileUploader"] span,
         [data-testid="stCameraInput"] p,
         [data-testid="stCameraInput"] span {
-            color: #1a1a2e !important;
+            color: #0f172a !important;
         }
         [data-testid="stFileUploader"] {
-            background-color: #ffffff;
-            border: 2px dashed #d0d7de;
+            background-color: #f8fafc;
+            border: 2px dashed #cbd5e1;
             border-radius: 10px;
         }
         [data-testid="stFileUploader"]:hover {
             border-color: #00b894;
         }
 
-        /* ===== DOWNLOAD BUTTON ===== */
+        /* DOWNLOAD BUTTON */
         .stDownloadButton > button {
             background-color: #2d8cf0 !important;
             color: #ffffff !important;
@@ -398,12 +402,16 @@ def get_theme_css():
         }
         .stDownloadButton > button:hover {
             background-color: #1a7de0 !important;
-            border-color: #1a7de0 !important;
         }
 
-        /* ===== DIVIDER ===== */
+        /* DIVIDER */
         hr {
             border-color: #e2e8f0 !important;
+        }
+
+        /* METRIC VALUE OVERRIDE FOR LIGHT THEME */
+        .metric-value {
+            color: #0f172a !important;
         }
         </style>
         """
@@ -592,7 +600,7 @@ def display_statistics():
     with col1:
         st.markdown(f"""
         <div class='stat-card'>
-            <h3 style='color:#00d4aa;'>{stats['total_scans']}</h3>
+            <h3 style='color:#0f766e;'>{stats['total_scans']}</h3>
             <p>Total Scans</p>
         </div>
         """, unsafe_allow_html=True)
@@ -698,10 +706,10 @@ def main():
             st.caption("No analysis records yet")
     
     # Main page header
-    subheading_color = "#9ca3af" if st.session_state['dark_mode'] else "#64748b"
+    subheading_color = "#9ca3af" if st.session_state['dark_mode'] else "#475569"
     st.markdown(f"""
     <div style='text-align: center; padding: 20px 0;'>
-        <h1 style='color:#00d4aa; font-size: 3em;'>♻️ Automatic Waste Detection Using AI</h1>
+        <h1 style='color:#0f766e; font-size: 3em;'>♻️ Automatic Waste Detection Using AI</h1>
         <h3 style='color:{subheading_color};'>Intelligent Waste Classification System for Sustainable Urban Management</h3>
     </div>
     """, unsafe_allow_html=True)
