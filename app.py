@@ -10,7 +10,7 @@ from datetime import datetime
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="EcoVision Enterprise",
+    page_title="Automatic Waste Detection Using AI",
     page_icon="♻️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -20,188 +20,390 @@ st.set_page_config(
 if 'dark_mode' not in st.session_state:
     st.session_state['dark_mode'] = True
 
-# --- Theme-based CSS (unchanged) ---
+# --- Theme-based CSS (FIXED COLORS) ---
 def get_theme_css():
     if st.session_state['dark_mode']:
         return """
         <style>
-        .main {
+        /* ===== MAIN BACKGROUND & BASE FONT ===== */
+        .main, .stApp {
             background-color: #0e1117;
-            color: #ffffff;
+            color: #e0e0e0;
         }
-        .stMetric {
+        .stApp p, .stApp span, .stApp label, .stApp li, .stApp div {
+            color: #e0e0e0;
+        }
+
+        /* ===== METRIC CARDS ===== */
+        div[data-testid="stMetric"] {
             background-color: #1e1e1e;
             padding: 20px;
             border-radius: 10px;
             border-left: 5px solid #00d4aa;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            color: white;
         }
-        .metric-value {
+        div[data-testid="stMetricValue"] > div {
             color: #00d4aa !important;
+            font-weight: 700;
         }
-        .metric-label {
+        div[data-testid="stMetricLabel"] > div > p {
             color: #b0b0b0 !important;
+            font-weight: 500;
         }
+
+        /* ===== SIDEBAR ===== */
         div[data-testid="stSidebar"] {
             background-color: #1a1d23;
-            color: white;
+            border-right: 1px solid #2a2d35;
+        }
+        div[data-testid="stSidebar"] .stMarkdown p,
+        div[data-testid="stSidebar"] .stMarkdown h3,
+        div[data-testid="stSidebar"] label {
+            color: #e0e0e0 !important;
         }
         div[data-testid="stSidebarUserContent"] {
             padding-top: 2rem;
         }
-        .stButton button {
-            background-color: #00d4aa;
-            color: black;
-            font-weight: bold;
-            border-radius: 8px;
-            border: none;
-            padding: 10px 20px;
+
+        /* ===== BUTTONS (DARK) ===== */
+        .stButton > button {
+            background-color: #00d4aa !important;
+            color: #0e1117 !important;
+            font-weight: 700 !important;
+            border-radius: 8px !important;
+            border: 2px solid #00d4aa !important;
+            padding: 10px 20px !important;
         }
-        .stButton button:hover {
-            background-color: #00b894;
+        .stButton > button:hover {
+            background-color: #00b894 !important;
+            border-color: #00b894 !important;
+            color: #ffffff !important;
         }
-        .stRadio > div {
-            background-color: #2d2d2d;
+        .stButton > button:active {
+            background-color: #00997a !important;
+            border-color: #00997a !important;
+        }
+        .stButton > button p {
+            color: #0e1117 !important;
+        }
+        .stButton > button:hover p {
+            color: #ffffff !important;
+        }
+
+        /* ===== RADIO / SELECT WIDGETS ===== */
+        div[data-testid="stRadio"] > div {
+            background-color: #262a33;
             padding: 10px;
             border-radius: 10px;
-            color: white;
+            border: 1px solid #3a3f4b;
+            color: #e0e0e0;
         }
-        .stProgress > div > div {
-            background-color: #00d4aa;
+        div[data-testid="stRadio"] label {
+            color: #e0e0e0 !important;
         }
-        .stAlert {
-            background-color: #2d2d2d;
-            color: white;
+
+        /* ===== PROGRESS BAR ===== */
+        .stProgress > div > div > div > div {
+            background-color: #00d4aa !important;
         }
-        h1, h2, h3, h4 {
-            color: #00d4aa;
+
+        /* ===== ALERTS ===== */
+        div[data-testid="stAlert"] {
+            background-color: #262a33 !important;
+            border: 1px solid #3a3f4b !important;
+            border-radius: 8px;
         }
+        div[data-testid="stAlert"] p {
+            color: #e0e0e0 !important;
+        }
+
+        /* ===== HEADINGS ===== */
+        h1, h2, h3, h4, h5, h6 {
+            color: #00d4aa !important;
+        }
+
+        /* ===== INFO CARD ===== */
         .info-card {
-            background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+            background: linear-gradient(135deg, #1e1e1e 0%, #262a33 100%);
             padding: 20px;
             border-radius: 15px;
             border-left: 4px solid #00d4aa;
             margin-bottom: 20px;
-            color: white;
+            border: 1px solid #333;
+            color: #e0e0e0;
         }
+        .info-card p, .info-card h4, .info-card strong {
+            color: #e0e0e0 !important;
+        }
+
+        /* ===== STAT CARD ===== */
         .stat-card {
-            background: linear-gradient(135deg, #1a1d23 0%, #252930 100%);
+            background: linear-gradient(135deg, #1a1d23 0%, #262a33 100%);
             padding: 15px;
             border-radius: 10px;
             text-align: center;
-            border: 1px solid #333;
-            color: white;
+            border: 1px solid #3a3f4b;
+            color: #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .sidebar .stRadio label, .sidebar .stMarkdown, .sidebar .stMetric label {
+        .stat-card p, .stat-card h3 {
             color: #e0e0e0 !important;
         }
-        .stCaption {
+
+        /* ===== CAPTIONS & SMALL TEXT ===== */
+        .stCaption, div[data-testid="stCaptionContainer"] p {
+            color: #9ca3af !important;
+        }
+
+        /* ===== EXPANDER ===== */
+        [data-testid="stExpander"] {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        [data-testid="stExpander"] summary p {
+            color: #e0e0e0 !important;
+        }
+
+        /* ===== TABS ===== */
+        [data-baseweb="tab-list"] button p {
             color: #b0b0b0 !important;
+        }
+        [data-baseweb="tab-list"] button[aria-selected="true"] p {
+            color: #00d4aa !important;
+            font-weight: 700;
+        }
+
+        /* ===== FILE UPLOADER / CAMERA ===== */
+        [data-testid="stFileUploader"] p,
+        [data-testid="stFileUploader"] span,
+        [data-testid="stCameraInput"] p,
+        [data-testid="stCameraInput"] span {
+            color: #e0e0e0 !important;
+        }
+        [data-testid="stFileUploader"] {
+            background-color: #1e1e1e;
+            border: 2px dashed #3a3f4b;
+            border-radius: 10px;
+        }
+        [data-testid="stFileUploader"]:hover {
+            border-color: #00d4aa;
+        }
+
+        /* ===== WIDGET LABELS ===== */
+        div[data-testid="stWidgetLabel"] p {
+            color: #e0e0e0 !important;
+        }
+
+        /* ===== DOWNLOAD BUTTON ===== */
+        .stDownloadButton > button {
+            background-color: #2d8cf0 !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            border: 2px solid #2d8cf0 !important;
+            border-radius: 8px !important;
+        }
+        .stDownloadButton > button:hover {
+            background-color: #1a7de0 !important;
+            border-color: #1a7de0 !important;
+        }
+
+        /* ===== DIVIDER ===== */
+        hr {
+            border-color: #2a2d35 !important;
         }
         </style>
         """
     else:
         return """
         <style>
+        /* ===== MAIN BACKGROUND & BASE FONT ===== */
         .stApp, .main {
             background-color: #f8f9fa;
-            color: #212529;
+            color: #1a1a2e;
         }
-        .stApp p, .stApp span, .stApp label, .stApp li {
-            color: #212529;
+        .stApp p, .stApp span, .stApp label, .stApp li, .stApp div {
+            color: #1a1a2e;
         }
-        div[data-testid="stWidgetLabel"] p, 
-        div[data-testid="stWidgetLabel"] h1, 
-        div[data-testid="stWidgetLabel"] h2, 
+
+        /* ===== WIDGET LABELS (force dark text) ===== */
+        div[data-testid="stWidgetLabel"] p,
+        div[data-testid="stWidgetLabel"] h1,
+        div[data-testid="stWidgetLabel"] h2,
         div[data-testid="stWidgetLabel"] h3,
         legend {
-            color: #212529 !important;
+            color: #1a1a2e !important;
+            font-weight: 600;
         }
+
+        /* ===== METRIC CARDS ===== */
         div[data-testid="stMetric"] {
             background-color: #ffffff;
             padding: 20px;
             border-radius: 10px;
-            border-left: 5px solid #00d4aa;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid #00b894;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
         }
         div[data-testid="stMetricValue"] > div {
-            color: #00b894 !important;
+            color: #008c6a !important;
+            font-weight: 700;
         }
         div[data-testid="stMetricLabel"] > div > p {
-            color: #212529 !important;
+            color: #4a5568 !important;
             font-weight: 500;
         }
+
+        /* ===== SIDEBAR ===== */
         div[data-testid="stSidebar"] {
             background-color: #ffffff !important;
-            border-right: 1px solid #dee2e6;
+            border-right: 1px solid #e2e8f0;
         }
+        div[data-testid="stSidebar"] .stMarkdown p,
+        div[data-testid="stSidebar"] .stMarkdown h3,
+        div[data-testid="stSidebar"] label {
+            color: #1a1a2e !important;
+        }
+
+        /* ===== RADIO / SELECT WIDGETS ===== */
         div[data-testid="stRadio"] > div {
-            background-color: #e9ecef;
+            background-color: #eef2f7;
             padding: 10px;
             border-radius: 10px;
+            border: 1px solid #d0d7de;
+            color: #1a1a2e;
         }
-        .stButton button {
-            background-color: #00d4aa;
-            border-radius: 8px;
-            border: none;
-            padding: 10px 20px;
+        div[data-testid="stRadio"] label {
+            color: #1a1a2e !important;
         }
-        .stButton button p {
-            color: #212529 !important;
-            font-weight: bold;
+
+        /* ===== BUTTONS (LIGHT) ===== */
+        .stButton > button {
+            background-color: #00b894 !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            border-radius: 8px !important;
+            border: 2px solid #00b894 !important;
+            padding: 10px 20px !important;
         }
-        .stButton button:hover {
-            background-color: #00b894;
+        .stButton > button:hover {
+            background-color: #008c6a !important;
+            border-color: #008c6a !important;
+            color: #ffffff !important;
         }
+        .stButton > button:active {
+            background-color: #006b52 !important;
+            border-color: #006b52 !important;
+        }
+        .stButton > button p {
+            color: #ffffff !important;
+        }
+
+        /* ===== PROGRESS BAR ===== */
         .stProgress > div > div > div > div {
-            background-color: #00d4aa;
+            background-color: #00b894 !important;
         }
+
+        /* ===== ALERTS ===== */
         div[data-testid="stAlert"] {
-            background-color: #f1f3f5 !important;
+            background-color: #eef7ff !important;
+            border: 1px solid #b8daff !important;
+            border-radius: 8px;
         }
         div[data-testid="stAlert"] p {
-            color: #212529 !important;
+            color: #004085 !important;
         }
-        h1, h2, h3, h4 {
-            color: #00b894 !important;
+
+        /* ===== HEADINGS ===== */
+        h1, h2, h3, h4, h5, h6 {
+            color: #008c6a !important;
         }
+
+        /* ===== INFO CARD ===== */
         .info-card {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             padding: 20px;
             border-radius: 15px;
-            border-left: 4px solid #00d4aa;
+            border-left: 4px solid #00b894;
             margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            color: #1a1a2e;
         }
-        .info-card p, .info-card h4 {
-            color: #212529 !important;
+        .info-card p, .info-card h4, .info-card strong {
+            color: #1a1a2e !important;
         }
+
+        /* ===== STAT CARD ===== */
         .stat-card {
             background: #ffffff;
             padding: 15px;
             border-radius: 10px;
             text-align: center;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            color: #1a1a2e;
         }
-        .stat-card p {
-            color: #212529 !important;
+        .stat-card p, .stat-card h3 {
+            color: #1a1a2e !important;
         }
-        div[data-testid="stCaptionContainer"] p {
-            color: #495057 !important;
+
+        /* ===== CAPTIONS & SMALL TEXT ===== */
+        .stCaption, div[data-testid="stCaptionContainer"] p {
+            color: #64748b !important;
+        }
+
+        /* ===== EXPANDER ===== */
+        [data-testid="stExpander"] {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
         }
         [data-testid="stExpander"] summary p {
-            color: #212529 !important;
+            color: #1a1a2e !important;
         }
+
+        /* ===== TABS ===== */
         [data-baseweb="tab-list"] button p {
-            color: #212529 !important;
+            color: #64748b !important;
         }
+        [data-baseweb="tab-list"] button[aria-selected="true"] p {
+            color: #008c6a !important;
+            font-weight: 700;
+        }
+
+        /* ===== FILE UPLOADER / CAMERA ===== */
         [data-testid="stFileUploader"] p,
         [data-testid="stFileUploader"] span,
         [data-testid="stCameraInput"] p,
         [data-testid="stCameraInput"] span {
-            color: #212529 !important;
+            color: #1a1a2e !important;
+        }
+        [data-testid="stFileUploader"] {
+            background-color: #ffffff;
+            border: 2px dashed #d0d7de;
+            border-radius: 10px;
+        }
+        [data-testid="stFileUploader"]:hover {
+            border-color: #00b894;
+        }
+
+        /* ===== DOWNLOAD BUTTON ===== */
+        .stDownloadButton > button {
+            background-color: #2d8cf0 !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            border: 2px solid #2d8cf0 !important;
+            border-radius: 8px !important;
+        }
+        .stDownloadButton > button:hover {
+            background-color: #1a7de0 !important;
+            border-color: #1a7de0 !important;
+        }
+
+        /* ===== DIVIDER ===== */
+        hr {
+            border-color: #e2e8f0 !important;
         }
         </style>
         """
@@ -496,10 +698,10 @@ def main():
             st.caption("No analysis records yet")
     
     # Main page header
-    subheading_color = "#b0b0b0" if st.session_state['dark_mode'] else "#495057"
+    subheading_color = "#9ca3af" if st.session_state['dark_mode'] else "#64748b"
     st.markdown(f"""
     <div style='text-align: center; padding: 20px 0;'>
-        <h1 style='color:#00d4aa; font-size: 3em;'>♻️ EcoVision Enterprise</h1>
+        <h1 style='color:#00d4aa; font-size: 3em;'>♻️ Automatic Waste Detection Using AI</h1>
         <h3 style='color:{subheading_color};'>Intelligent Waste Classification System for Sustainable Urban Management</h3>
     </div>
     """, unsafe_allow_html=True)
@@ -543,7 +745,7 @@ def main():
                     df_export = pd.DataFrame(st.session_state['history'])
                     csv = df_export.to_csv(index=False)
                     st.download_button(label="Download CSV", data=csv,
-                                       file_name=f"ecovision_history_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                       file_name=f"Automatic_Waste_Detection_Using_AI{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                                        mime="text/csv")
             with col_exp2:
                 st.caption("Export your analysis history for reporting and compliance purposes.")
