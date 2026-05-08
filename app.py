@@ -1,9 +1,6 @@
 import streamlit as st
-# Removed: from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 import tensorflow as tf
 import numpy as np
-import cv2
-import av
 import pandas as pd
 import time
 from PIL import Image, ImageOps
@@ -21,7 +18,7 @@ st.set_page_config(
 
 # --- Session State for Theme ---
 if 'dark_mode' not in st.session_state:
-    st.session_state['dark_mode'] = True  # Dark mode default
+    st.session_state['dark_mode'] = True
 
 # --- Theme-based CSS (unchanged) ---
 def get_theme_css():
@@ -459,7 +456,6 @@ def main():
         
         st.divider()
         
-        # --- Live Stream mode completely removed ---
         mode = st.radio("🎯", 
                         ["📷 Camera", 
                          "📁 File Upload",
@@ -508,7 +504,6 @@ def main():
     </div>
     """, unsafe_allow_html=True)
     
-    # Mode handling (no Live Stream)
     if mode == "📷 Camera":
         st.markdown("## 📸 Smart Camera Analysis")
         st.info("📷 **Snapshot Mode**: Take photos to analyze waste items. Results are saved to your history.")
