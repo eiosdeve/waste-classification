@@ -2,5 +2,5 @@ streamlit
 tensorflow
 numpy
 pandas
-Pillow
+pillow
 plotly
